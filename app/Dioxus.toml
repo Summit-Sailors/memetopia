@@ -1,0 +1,6 @@
+[application]
+name = "Memetopia"
+
+
+[web.app]
+title = "Memetopia"

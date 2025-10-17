@@ -1,0 +1,37 @@
+name: Build and Push Docker Images to Unraid Registry
+
+on:
+  push:
+    branches:
+      - main
+      - staging
+      - dev
+  workflow_dispatch:
+
+jobs:
+  build-and-push:
+    runs-on: [self-hosted]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Create .env file
+        run: |
+          {
+            echo "ENV=local"
+            echo "SERVER_URL=http://127.0.0.1:8071"
+            echo "PORT=8080"
+            echo "ACCESS_TOKEN=IP=0.0.0.0"
+          } > .env
+      - name: Build Docker image
+        run: |
+          docker build -t ${{ secrets.REGISTRY_HOST_PORT }}/memetopia-${{ github.ref_name }}:${{ github.sha }} .
+      - name: Tag Docker image as latest
+        run: |
+          docker tag ${{ secrets.REGISTRY_HOST_PORT }}/memetopia-${{ github.ref_name }}:${{ github.sha }} ${{ secrets.REGISTRY_HOST_PORT }}/memetopia-${{ github.ref_name }}:latest
+      - name: Login to Docker registry
+        run: |
+          docker login ${{ secrets.REGISTRY_HOST_PORT }} -u ${{ secrets.REGISTRY_USERNAME }} -p ${{ secrets.REGISTRY_PASSWORD }}
+      - name: Push Docker images
+        run: |
+          docker push ${{ secrets.REGISTRY_HOST_PORT }}/memetopia-${{ github.ref_name }}:${{ github.sha }}
+          docker push ${{ secrets.REGISTRY_HOST_PORT }}/memetopia-${{ github.ref_name }}:latest

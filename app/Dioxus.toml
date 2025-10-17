@@ -1,6 +1,6 @@
 [application]
 name = "Memetopia"
-
+out_dir = "dist"
 
 [web.app]
 title = "Memetopia"

@@ -29,7 +29,6 @@ incremental = false
 lto = true
 opt-level = "z"
 panic = "abort"
-strip = true
 
 [profile.wasm-dev]
 inherits = "dev"

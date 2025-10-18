@@ -1,5 +1,4 @@
-#![allow(non_snake_case)]
-
+use app::application::App;
 use dioxus::prelude::*;
 use dioxus_primitives::toast::ToastProvider;
 
@@ -10,11 +9,4 @@ fn main() {
 			ToastProvider { App {} }
 		}
 	});
-}
-
-#[component]
-fn App() -> Element {
-	rsx! {
-		main { class: "max-w-7xl mx-auto p-4 font-sans text-gray-800" }
-	}
 }

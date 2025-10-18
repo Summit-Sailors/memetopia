@@ -19,7 +19,7 @@ COPY . .
 RUN dx bundle --package app --release
 
 FROM chef AS runtime
-COPY --from=builder /app/target/dx/app/release/web/ /usr/local/app/
+COPY --from=builder /app/app/dist/ /usr/local/app/
 ENV PORT=8080
 ENV IP=0.0.0.0
 EXPOSE 8080

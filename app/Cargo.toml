@@ -11,6 +11,7 @@ repository = { workspace = true }
 api = { workspace = true }
 
 serde = { workspace = true }
+strum = { workspace = true }
 
 dioxus = { workspace = true }
 dioxus-free-icons = { workspace = true }

@@ -3,7 +3,7 @@ use {
 	dioxus::prelude::*,
 };
 
-#[derive(Clone, PartialEq, strum::EnumIter, Routable)]
+#[derive(Clone, strum::EnumIter, Eq, PartialEq, Routable)]
 #[rustfmt::skip]
 pub enum Route {
 	#[layout(Layout)]

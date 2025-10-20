@@ -1,14 +1,14 @@
 use dioxus::prelude::*;
 use std::sync::LazyLock;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Clone, Debug, Eq, PartialEq)]
 pub struct RoadmapStage {
 	pub title: &'static str,
 	pub description: &'static str,
 	pub items: Vec<StageItem>,
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Clone, Debug, Eq, PartialEq)]
 pub struct StageItem {
 	pub title: &'static str,
 	pub description: &'static str,

@@ -1,4 +1,4 @@
-#[dotenvy::load(path = "../.env")]
+#[dotenvy::load]
 fn main() {
 	if std::env::var("ENV").unwrap() == "local" {
 		println!("cargo:rustc-env=RUST_BACKTRACE=1");

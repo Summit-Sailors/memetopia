@@ -16,10 +16,10 @@ RUN cargo chef cook --release --recipe-path recipe.json
 
 COPY . .
 
-RUN dx bundle --package app --release
+RUN dx bundle --release
 
 FROM chef AS runtime
-COPY --from=builder /app/app/dist/ /usr/local/app/
+COPY --from=builder /app/dist/ /usr/local/app/
 ENV PORT=8080
 ENV IP=0.0.0.0
 EXPOSE 8080

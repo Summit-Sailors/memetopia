@@ -17,4 +17,4 @@ sort-d:
 web:
   #!/usr/bin/env bash
   set -euo pipefail
-  dx serve -p app
+  dx serve

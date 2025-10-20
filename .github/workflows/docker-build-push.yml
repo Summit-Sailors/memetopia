@@ -17,7 +17,7 @@ jobs:
       - name: Create .env file
         run: |
           {
-            echo "ENV=local"
+            echo "ENV=dev"
             echo "SERVER_URL=http://127.0.0.1:8071"
             echo "PORT=8080"
             echo "ACCESS_TOKEN=IP=0.0.0.0"

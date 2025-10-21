@@ -1,5 +1,8 @@
 use {
-	crate::{layout::Layout, pages::home::Home},
+	crate::{
+		layout::Layout,
+		pages::{generator::Generator, home::Home},
+	},
 	dioxus::prelude::*,
 };
 
@@ -9,4 +12,6 @@ pub enum Route {
 	#[layout(Layout)]
     #[route("/")]
     Home {},
+    #[route("/generator")]
+    Generator {},
 }

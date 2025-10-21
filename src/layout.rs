@@ -1,7 +1,10 @@
 use {
 	crate::router::Route,
 	dioxus::prelude::*,
-	dioxus_free_icons::{Icon, icons::bs_icons::BsHouse},
+	dioxus_free_icons::{
+		Icon,
+		icons::bs_icons::{BsHouse, BsSpeedometer2},
+	},
 };
 
 #[component]
@@ -11,6 +14,9 @@ pub fn Layout() -> Element {
 			header { class: "w-full sticky top-0 z-10  right-0 left-0 flex justify-end gap-4 items-center bg-black/80 backdrop-blur-md px-10 py-2 border-b border-b-white/20",
 				Link { to: Route::Home {}, class: "mr-auto",
 					Icon { icon: BsHouse, width: 24, height: 24 }
+				}
+				Link { to: Route::Generator {}, class: "mr-auto",
+					Icon { icon: BsSpeedometer2, width: 24, height: 24 }
 				}
 			}
 			div { class: "flex-1 pt-4", Outlet::<Route> {} }

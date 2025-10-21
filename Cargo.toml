@@ -35,7 +35,10 @@ serde_json = "1.0.145"
 strum = { version = "0.27.2", features = ["derive"] }
 uuid = { version = "1.18.1", features = ["serde", "v4"] }
 
-dioxus = { version = "0.7.0-rc.1", features = ["fullstack", "router"] }
+gloo = { version = "0.11.0" }
+web-sys = { version = "0.3.81", features = ["CanvasRenderingContext2d", "HtmlAnchorElement", "HtmlCanvasElement", "HtmlImageElement"] }
+
+dioxus = { version = "0.7.0-rc.3", features = ["fullstack", "router"] }
 dioxus-free-icons = { git = "https://github.com/Distortedlogic/dioxus-free-icons.git", branch = "0.7.0-rc.0", features = [
   "bootstrap",
   "feather",

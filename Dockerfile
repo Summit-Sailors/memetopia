@@ -8,7 +8,7 @@ RUN cargo chef prepare --recipe-path recipe.json
 
 FROM chef AS builder
 RUN curl -L --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/cargo-bins/cargo-binstall/main/install-from-binstall-release.sh | bash
-RUN cargo binstall dioxus-cli@0.7.0-rc.2 --root /.cargo -y --force
+RUN cargo binstall dioxus-cli@0.7.0-rc.3 --root /.cargo -y --force
 ENV PATH="/.cargo/bin:$PATH"
 
 COPY --from=planner /app/recipe.json recipe.json

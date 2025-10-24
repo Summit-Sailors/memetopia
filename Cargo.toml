@@ -36,6 +36,7 @@ strum = { version = "0.27.2", features = ["derive"] }
 uuid = { version = "1.18.1", features = ["serde", "v4"] }
 
 gloo = { version = "0.11.0" }
+js-sys = { version = "0.3.81" }
 web-sys = { version = "0.3.81", features = [
   "CanvasRenderingContext2d",
   "DomRect",
@@ -47,7 +48,7 @@ web-sys = { version = "0.3.81", features = [
 ] }
 
 dioxus = { version = "0.7.0-rc.3", features = ["fullstack", "router"] }
-dioxus-free-icons = { git = "https://github.com/Distortedlogic/dioxus-free-icons.git", branch = "0.7.0-rc.0", features = [
+dioxus-free-icons = { git = "https://github.com/Distortedlogic/dioxus-free-icons.git", branch = "0.7.0-rc.3", features = [
   "bootstrap",
   "feather",
   "font-awesome-solid",

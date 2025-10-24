@@ -2,17 +2,25 @@ use dioxus::prelude::*;
 
 use crate::{
 	stores::canvas_objects::{
-		CanvasObjects, CanvasObjectsStoreExt, CanvasObjectsStoreImplExt, MEME_CANVAS_ID, get_canvas_mouse_pos,
+		CanvasObjects, CanvasObjectsStoreExt, CanvasObjectsStoreImplExt, HandleType, MEME_CANVAS_ID, TextBoxStoreExt,
+		get_canvas_mouse_pos,
 	},
 	utils::download_canvas_as_image,
 };
 
+#[derive(Clone, Copy, Debug, PartialEq)]
+enum InteractionMode {
+	None,
+	Dragging { index: usize, offset: (f64, f64) },
+	Resizing { index: usize, handle: HandleType, start_pos: (f64, f64) },
+	Rotating { index: usize, start_angle: f64 },
+}
+
 #[component]
 pub fn Generator() -> Element {
 	let mut canvas_objects = use_store(|| CanvasObjects::new(500, 500));
-	let mut dragging = use_signal(|| false);
-	let mut drag_index = use_signal(|| None::<usize>);
-	let mut drag_offset = use_signal(|| (0.0, 0.0)); // Offset from mouse to text box origin
+	let text_boxes = canvas_objects.text_boxes();
+	let mut interaction_mode = use_signal(|| InteractionMode::None);
 
 	use_effect(move || canvas_objects.render_canvas());
 	rsx! {
@@ -30,44 +38,105 @@ pub fn Generator() -> Element {
 						height: 500,
 						onmousedown: move |e| {
 								let (x, y) = get_canvas_mouse_pos(e.downcast::<web_sys::MouseEvent>().unwrap());
+								if let Some(selected_idx) = canvas_objects.selected_index()()
+										&& let Some(text_box) = canvas_objects.text_boxes().get(selected_idx)
+										&& let Some(handle_type) = text_box.read().get_handle_at_position(x, y)
+								{
+										match handle_type {
+												HandleType::Rotate => {
+														let tb = text_box.read();
+														let start_angle = (y - tb.pos_y).atan2(x - tb.pos_x) - tb.rotation;
+														*interaction_mode.write() = InteractionMode::Rotating {
+																index: selected_idx,
+																start_angle,
+														};
+												}
+												_ => {
+														*interaction_mode.write() = InteractionMode::Resizing {
+																index: selected_idx,
+																handle: handle_type,
+																start_pos: (x, y),
+														};
+												}
+										}
+										e.prevent_default();
+										return;
+								}
 								if let Some(index) = canvas_objects.get_text_box_at_position(x, y) {
-										let tb = canvas_objects.text_boxes().get(index).unwrap();
+										canvas_objects.select_text_box(Some(index));
+										let tb = canvas_objects.text_boxes().get(index).expect("no tc at index");
 										let text_box = tb.read();
 										let offset_x = x - text_box.pos_x;
 										let offset_y = y - text_box.pos_y;
-										*dragging.write() = true;
-										*drag_index.write() = Some(index);
-										*drag_offset.write() = (offset_x, offset_y);
+										*interaction_mode.write() = InteractionMode::Dragging {
+												index,
+												offset: (offset_x, offset_y),
+										};
 										e.prevent_default();
+								} else {
+										canvas_objects.select_text_box(None);
+										*interaction_mode.write() = InteractionMode::None;
 								}
 						},
 						onmousemove: move |e| {
-								if dragging() && let Some(index) = drag_index() {
-										let (mouse_x, mouse_y) = get_canvas_mouse_pos(
-												e.downcast::<web_sys::MouseEvent>().unwrap(),
-										);
-										let (offset_x, offset_y) = drag_offset();
-										if let Some(mut text_box) = canvas_objects.text_boxes().get_mut(index) {
-												text_box.pos_x = mouse_x - offset_x;
-												text_box.pos_y = mouse_y - offset_y;
-												text_box.pos_x = text_box.pos_x.clamp(0.0, 500.0);
-												text_box.pos_y = text_box
-														.pos_y
-														.max(text_box.font_size as f64)
-														.min(500.0);
+								let (mouse_x, mouse_y) = get_canvas_mouse_pos(
+										e.downcast::<web_sys::MouseEvent>().unwrap(),
+								);
+								match interaction_mode() {
+										InteractionMode::Dragging { index, offset } => {
+												let (offset_x, offset_y) = offset;
+												if let Some(mut text_box) = canvas_objects.text_boxes().get_mut(index) {
+														text_box.pos_x = (mouse_x - offset_x).clamp(0.0, 500.0);
+														text_box.pos_y = text_box
+																.pos_y
+																.max(text_box.font_size as f64)
+																.min(500.0);
+														text_box.pos_y = (mouse_y - offset_y)
+																.max(text_box.font_size as f64)
+																.min(500.0);
+												}
+												canvas_objects.render_canvas();
 										}
-										canvas_objects.render_canvas();
+										InteractionMode::Rotating { index, start_angle } => {
+												if let Some(mut text_box) = canvas_objects.text_boxes().get_mut(index) {
+														let current_angle = (mouse_y - text_box.pos_y)
+																.atan2(mouse_x - text_box.pos_x);
+														text_box.rotation = current_angle - start_angle;
+												}
+												canvas_objects.render_canvas();
+										}
+										InteractionMode::Resizing { index, handle, start_pos } => {
+												if let Some(mut text_box) = canvas_objects.text_boxes().get_mut(index) {
+														let (start_x, start_y) = start_pos;
+														let dx = mouse_x - start_x;
+														let dy = mouse_y - start_y;
+														let (left, top, right, bottom) = text_box.get_text_bounds(false);
+														match handle {
+																HandleType::ResizeBottomRight => {
+																		text_box.scale_x = ((right - left) + 2_f64 * dx)
+																				/ (right - left);
+																		text_box.scale_y = ((bottom - top) + 2_f64 * dy)
+																				/ (bottom - top);
+																}
+																HandleType::ResizeTopLeft => {
+																		text_box.scale_x = ((right - left) - 2_f64 * dx)
+																				/ (right - left);
+																		text_box.scale_y = ((bottom - top) - 2_f64 * dy)
+																				/ (bottom - top);
+																}
+																_ => {}
+														}
+												}
+												canvas_objects.render_canvas();
+										}
+										InteractionMode::None => {}
 								}
 						},
 						onmouseup: move |_| {
-								*dragging.write() = false;
-								*drag_index.write() = None;
-								*drag_offset.write() = (0.0, 0.0);
+								*interaction_mode.write() = InteractionMode::None;
 						},
 						onmouseleave: move |_| {
-								*dragging.write() = false;
-								*drag_index.write() = None;
-								*drag_offset.write() = (0.0, 0.0);
+								*interaction_mode.write() = InteractionMode::None;
 						},
 					}
 				}
@@ -88,7 +157,7 @@ pub fn Generator() -> Element {
 							}
 						}
 						hr { class: "border-gray-300" }
-						for (index , mut text_box) in canvas_objects.text_boxes().iter().enumerate() {
+						for (index , mut text_box) in text_boxes.iter().enumerate() {
 							div { class: "border rounded-lg p-3 space-y-2",
 								div { class: "flex justify-between items-center",
 									span { class: "text-sm font-medium text-gray-700",
@@ -104,10 +173,9 @@ pub fn Generator() -> Element {
 								}
 								input {
 									r#type: "text",
-									value: "{text_box.read().text}",
+									value: "{text_box.text().read()}",
 									oninput: move |evt| {
-											let mut w = text_box.write();
-											w.text = evt.value();
+											text_box.write().text = evt.value();
 									},
 									class: "w-full px-4 py-3 text-base border-2 rounded-lg focus:outline-none transition-all duration-200",
 								}

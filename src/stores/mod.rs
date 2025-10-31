@@ -1,1 +1,2 @@
-pub mod canvas_objects;
+pub mod meme_canvas;
+pub mod text_box;

@@ -47,8 +47,8 @@ web-sys = { version = "0.3.82", features = [
   "MouseEvent",
 ] }
 
-dioxus = { version = "0.7.0-rc.3", features = ["fullstack", "router"] }
-dioxus-free-icons = { git = "https://github.com/Distortedlogic/dioxus-free-icons.git", branch = "0.7.0-rc.3", features = [
+dioxus = { version = "0.7.0", features = ["fullstack", "router"] }
+dioxus-free-icons = { git = "https://github.com/Distortedlogic/dioxus-free-icons.git", branch = "0.7.0", features = [
   "bootstrap",
   "feather",
   "font-awesome-solid",

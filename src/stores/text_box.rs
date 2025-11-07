@@ -6,7 +6,9 @@ use web_sys::wasm_bindgen::prelude::*;
 
 #[derive(Clone, PartialEq, Eq, Debug, Store)]
 pub struct TextBoxStyle {
-	pub font_size: u32,
+	pub size: u32,
+	pub family: String,
+	pub effect: String,
 }
 
 #[derive(Clone, PartialEq, Debug, Store)]
@@ -32,12 +34,12 @@ pub struct TextBounds {
 }
 
 impl TextBox {
-	pub fn new(text: String, x: f64, y: f64, font_size: u32) -> Self {
+	pub fn new(text: String, x: f64, y: f64, font_size: u32, font_family: String, font_effect: String) -> Self {
 		Self {
 			text,
 			x,
 			y,
-			style: TextBoxStyle { font_size },
+			style: TextBoxStyle { size: font_size, effect: font_effect, family: font_family },
 			rotation: 0.0,
 			scale_x: 1.0,
 			scale_y: 1.0,
@@ -45,16 +47,10 @@ impl TextBox {
 		}
 	}
 
-	pub fn get_text_bounds(&self, use_scaling: bool) -> TextBounds {
-		let text_width =
-			self.text.len() as f64 * self.style.font_size as f64 * 0.6 * if use_scaling { self.scale_x } else { 1_f64 };
-		let text_height = self.style.font_size as f64 * if use_scaling { self.scale_y } else { 1_f64 };
-		TextBounds {
-			left: self.x - text_width / 2.0,
-			top: self.y - text_height / 2.0,
-			right: self.x + text_width / 2.0,
-			bottom: self.y + text_height / 2.0,
-		}
+	pub fn get_bounds(&self, use_scaling: bool) -> TextBounds {
+		let text_width = self.text.len() as f64 * self.style.size as f64 * 0.6 * if use_scaling { self.scale_x } else { 1.0 };
+		let text_height = self.style.size as f64 * if use_scaling { self.scale_y } else { 1.0 };
+		TextBounds { left: self.x - text_width / 2.0, top: self.y - text_height / 2.0, right: self.x + text_width / 2.0, bottom: self.y + text_height / 2.0 }
 	}
 
 	pub fn draw_to_canvas(&self, ctx: &CanvasRenderingContext2d) {
@@ -64,7 +60,7 @@ impl TextBox {
 		ctx.rotate(self.rotation).ok();
 		ctx.scale(self.scale_x, self.scale_y).ok();
 
-		ctx.set_font(&format!("bold {}px Arial", self.style.font_size));
+		ctx.set_font(&format!("{} {}px {}", self.style.effect, self.style.size, self.style.family));
 		ctx.set_fill_style_str("white");
 		ctx.set_stroke_style_str("black");
 		ctx.set_line_width(3.0);
@@ -80,7 +76,7 @@ impl TextBox {
 	}
 
 	fn draw_selection_handles(&self, ctx: &CanvasRenderingContext2d) {
-		let TextBounds { left, top, right, bottom } = self.get_text_bounds(true);
+		let TextBounds { left, top, right, bottom } = self.get_bounds(true);
 
 		ctx.save();
 		ctx.translate(self.x, self.y).ok();
@@ -131,8 +127,8 @@ impl TextBox {
 
 	pub fn contains_point(&self, x: f64, y: f64) -> bool {
 		let (local_x, local_y) = self.canvas_to_local_coords(x, y);
-		let text_width = self.text.len() as f64 * self.style.font_size as f64 * 0.6 * self.scale_x;
-		let text_height = self.style.font_size as f64 * self.scale_y;
+		let text_width = self.text.len() as f64 * self.style.size as f64 * 0.6 * self.scale_x;
+		let text_height = self.style.size as f64 * self.scale_y;
 		let left = -text_width / 2.0;
 		let right = text_width / 2.0;
 		let top = -text_height / 2.0;
@@ -145,8 +141,8 @@ impl TextBox {
 			return None;
 		}
 		let (local_x, local_y) = self.canvas_to_local_coords(x, y);
-		let text_width = self.text.len() as f64 * self.style.font_size as f64 * 0.6 * self.scale_x;
-		let text_height = self.style.font_size as f64 * self.scale_y;
+		let text_width = self.text.len() as f64 * self.style.size as f64 * 0.6 * self.scale_x;
+		let text_height = self.style.size as f64 * self.scale_y;
 		let left = -text_width / 2.0;
 		let right = text_width / 2.0;
 		let top = -text_height / 2.0;

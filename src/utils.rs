@@ -5,24 +5,11 @@ use web_sys::{CanvasRenderingContext2d, HtmlAnchorElement, HtmlCanvasElement};
 pub const MEME_CANVAS_ID: &str = "meme-canvas-id";
 
 pub fn get_meme_canvas() -> HtmlCanvasElement {
-	document()
-		.get_element_by_id(MEME_CANVAS_ID)
-		.and_then(|elem| elem.dyn_into::<HtmlCanvasElement>().ok())
-		.expect("cant get meme canvas")
+	document().get_element_by_id(MEME_CANVAS_ID).and_then(|elem| elem.dyn_into::<HtmlCanvasElement>().ok()).expect("cant get meme canvas")
 }
 
 pub fn get_meme_canvas_ctx() -> CanvasRenderingContext2d {
-	get_meme_canvas()
-		.get_context("2d")
-		.expect("canvas context")
-		.expect("canvas context")
-		.dyn_into::<CanvasRenderingContext2d>()
-		.expect("canvas context")
-}
-
-pub fn get_canvas_mouse_pos(event: &web_sys::MouseEvent) -> (f64, f64) {
-	let rect = get_meme_canvas().get_bounding_client_rect();
-	(event.client_x() as f64 - rect.left(), event.client_y() as f64 - rect.top())
+	get_meme_canvas().get_context("2d").expect("canvas context").expect("canvas context").dyn_into::<CanvasRenderingContext2d>().expect("canvas context")
 }
 
 pub fn download_canvas_as_image() {

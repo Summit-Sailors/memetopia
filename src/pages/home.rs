@@ -20,14 +20,8 @@ static ROADMAP_DATA: LazyLock<Vec<RoadmapStage>> = LazyLock::new(|| {
 			title: "Meme Generator",
 			description: "The starting point of development. Requires using less common apis.",
 			items: vec![
-				StageItem {
-					title: "Canvas Implementation",
-					description: "Will start with canvas initially as is more well known and lowers inital complexity.",
-				},
-				StageItem {
-					title: "WGPU Engine Upgrade",
-					description: "Migrate rendering to WGPU for cross-platform and performance.",
-				},
+				StageItem { title: "Canvas Implementation", description: "Will start with canvas initially as is more well known and lowers inital complexity." },
+				StageItem { title: "WGPU Engine Upgrade", description: "Migrate rendering to WGPU for cross-platform and performance." },
 			],
 		},
 		RoadmapStage {
@@ -37,68 +31,65 @@ static ROADMAP_DATA: LazyLock<Vec<RoadmapStage>> = LazyLock::new(|| {
 				StageItem { title: "Database", description: "PostgreSQL" },
 				StageItem { title: "DB ORM", description: "Diesel" },
 				StageItem { title: "User Authentication", description: "JWT/Cookies" },
-				StageItem {
-					title: "Blob Storage",
-					description: "Try self hosted Minio, move to cloudflare R2 when bandwidth is too high.",
-				},
+				StageItem { title: "Blob Storage", description: "Try self hosted Minio, move to cloudflare R2 when bandwidth is too high." },
 				StageItem { title: "File Upload API", description: "signed-urls to post, but need to sync with database." },
 			],
 		},
-		RoadmapStage {
-			title: "Meme Analytics Game",
-			description: "Use data science on scrapped memes to allow users to bet on percentile window the meme falls in.",
-			items: vec![
-				StageItem {
-					title: "Scrape Memes",
-					description: "Gather large collection of memes from the internet along with their engagement metrics.",
-				},
-				StageItem {
-					title: "Data Science",
-					description: "Design the calculations to create the numbers for betting and bet returns.",
-				},
-				StageItem { title: "Implement Game on Site", description: "Add a page for playing the game to the site." },
-			],
-		},
-		RoadmapStage {
-			title: "Meme Poker",
-			description: "Use the betting on a meme's percentile to create a meme texas holdem.",
-			items: vec![
-				StageItem {
-					title: "Showdown Value",
-					description: "Defined as the total returns of the best 5 of 7 meme bets in a hand.",
-				},
-				StageItem {
-					title: "Initial System",
-					description: "Start by implement standard poker, then layer on the memes.",
-				},
-			],
-		},
-		RoadmapStage {
-			title: "Meme Marketing Tournaments",
-			description: "Allow Companies to create tournaments for purposed marketing memes",
-			items: vec![
-				StageItem {
-					title: "Showdown Value",
-					description: "Defined as the total returns of the best 5 of 7 meme bets in a hand.",
-				},
-				StageItem {
-					title: "Initial System",
-					description: "Start by implement standard poker, then layer on the memes.",
-				},
-			],
-		},
-		RoadmapStage {
-			title: "The truest Meme Coin",
-			description: "Design a crypto token based on the memetopia ecosystem",
-			items: vec![
-				StageItem {
-					title: "Creation",
-					description: "buy for meme poker or torunament creation. Cannot withdraw to chain ",
-				},
-				StageItem { title: "Sinks", description: "Rake and tournaments" },
-				StageItem { title: "Distribution", description: "poker winnings, profit share of to tournament winners" },
-			],
-		},
+		// RoadmapStage {
+		// 	title: "Meme Analytics Game",
+		// 	description: "Use data science on scrapped memes to allow users to bet on percentile window the meme falls in.",
+		// 	items: vec![
+		// 		StageItem {
+		// 			title: "Scrape Memes",
+		// 			description: "Gather large collection of memes from the internet along with their engagement metrics.",
+		// 		},
+		// 		StageItem {
+		// 			title: "Data Science",
+		// 			description: "Design the calculations to create the numbers for betting and bet returns.",
+		// 		},
+		// 		StageItem { title: "Implement Game on Site", description: "Add a page for playing the game to the site." },
+		// 	],
+		// },
+		// RoadmapStage {
+		// 	title: "Meme Poker",
+		// 	description: "Use the betting on a meme's percentile to create a meme texas holdem.",
+		// 	items: vec![
+		// 		StageItem {
+		// 			title: "Showdown Value",
+		// 			description: "Defined as the total returns of the best 5 of 7 meme bets in a hand.",
+		// 		},
+		// 		StageItem {
+		// 			title: "Initial System",
+		// 			description: "Start by implement standard poker, then layer on the memes.",
+		// 		},
+		// 	],
+		// },
+		// RoadmapStage {
+		// 	title: "Meme Marketing Tournaments",
+		// 	description: "Allow Companies to create tournaments for purposed marketing memes",
+		// 	items: vec![
+		// 		StageItem {
+		// 			title: "Showdown Value",
+		// 			description: "Defined as the total returns of the best 5 of 7 meme bets in a hand.",
+		// 		},
+		// 		StageItem {
+		// 			title: "Initial System",
+		// 			description: "Start by implement standard poker, then layer on the memes.",
+		// 		},
+		// 	],
+		// },
+		// RoadmapStage {
+		// 	title: "The truest Meme Coin",
+		// 	description: "Design a crypto token based on the memetopia ecosystem",
+		// 	items: vec![
+		// 		StageItem {
+		// 			title: "Creation",
+		// 			description: "buy for meme poker or torunament creation. Cannot withdraw to chain ",
+		// 		},
+		// 		StageItem { title: "Sinks", description: "Rake and tournaments" },
+		// 		StageItem { title: "Distribution", description: "poker winnings, profit share of to tournament winners" },
+		// 	],
+		// },
 	]
 });
 

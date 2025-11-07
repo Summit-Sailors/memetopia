@@ -114,7 +114,7 @@ impl<Lens> Store<MemeCanvas, Lens> {
 					let (start_x, start_y) = start_pos;
 					let dx = mouse_x - start_x;
 					let dy = mouse_y - start_y;
-					let TextBounds { left, top, right, bottom } = text_box.get_text_bounds(false);
+					let TextBounds { left, top, right, bottom } = text_box.get_bounds(false);
 					match handle {
 						HandleType::ResizeBottomRight => {
 							text_box.scale_x = ((right - left) + 2.0 * dx) / (right - left);
